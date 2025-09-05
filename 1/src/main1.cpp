@@ -1,25 +1,74 @@
 #include <iostream>
+#include <string>
+#include <ctime>
+#include "main1.hpp"
 
-// TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-int main() {
-    // TIP Press <shortcut actionId="RenameElement"/> when your caret is at the
-    // <b>lang</b> variable name to see how CLion can help you rename it.
-    auto lang = "C++";
-    std::cout << "Hello and welcome to " << lang << "!\n";
+class Track
+{
+    std::string name;
+    std::tm creation_date;
+    unsigned int length;
+public:
+    void showInfo()
+    {
 
-    for (int i = 1; i <= 5; i++) {
-        // TIP Press <shortcut actionId="Debug"/> to start debugging your code.
-        // We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/>
-        // breakpoint for you, but you can always add more by pressing
-        // <shortcut actionId="ToggleLineBreakpoint"/>.
-        std::cout << "i = " << i << std::endl;
     }
+};
 
+class Player
+{
+    public:
+    void play()
+    {
+
+    }
+    void pause()
+    {
+
+    }
+    void next()
+    {
+
+    }
+    void stop()
+    {
+
+    }
+};
+
+int main()
+{
+    std::string input_str;
+    Player * user_player = new Player;
+    do
+    {
+        std::cout<< "Enter command (play/pause/next/stop/exit): ";
+        std::cin>>input_str;
+        if (input_str == "play")
+        {
+            user_player->play();
+        }
+        else if (input_str == "pause")
+        {
+            user_player->pause();
+        }
+        else if (input_str == "next")
+        {
+            user_player->next();
+        }
+        else if (input_str == "stop")
+        {
+            user_player->next();
+        }
+        else if (input_str == "exit")
+        {
+            break;
+        }
+        else
+        {
+            std::cout<< "Invalid input. Try again.\n";
+            continue;
+        }
+    } while (true);
     return 0;
 }
-
-// TIP See CLion help at <a
-// href="https://www.jetbrains.com/help/clion/">jetbrains.com/help/clion/</a>.
-//  Also, you can try interactive lessons for CLion by selecting
-//  'Help | Learn IDE Features' from the main menu.
