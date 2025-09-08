@@ -2,7 +2,7 @@
 #include <cmath>
 #include "main3.hpp"
 
-#define DEBUG
+//#define DEBUG
 
 
 class Window
@@ -11,22 +11,18 @@ class Window
     static const int screenHeight = 50;
     static const int minWindowWidth = 20;
     static const int minWindowHeight = 10;
-    int basePointXposition = 0;
-    int basePointYposition = 0;
-    int windowWidth = screenWidth - 10;
-    int windowHeight = screenHeight - 10;
-//    int basePointXposition;
-//    int basePointYposition;
-//    int windowWidth;
-//    int windowHeight;
+    int basePointXposition;
+    int basePointYposition;
+    int windowWidth;
+    int windowHeight;
 public:
-//    Window()
-//    {
-//        int basePointXposition = 0;
-//        int basePointYposition = 0;
-//        int windowWidth = screenWidth - 10;
-//        int windowHeight = screenHeight - 10;
-//    }
+    Window()
+    {
+        basePointXposition = 0;
+        basePointYposition = 0;
+        windowWidth = screenWidth - 10;
+        windowHeight = screenHeight - 10;
+    }
     void ShowInfo()
     {
         std::cout<< "basePointXposition = " << basePointXposition <<", basePointYposition = " << basePointYposition << ", windowWidth = " << windowWidth << ", windowHeight = " << windowHeight << std::endl;
