@@ -1,161 +1,141 @@
 #include <iostream>
-#include <cmath>
+#include <map>
+#include <cstdio>
+#include <string>
+#include "window.hpp"
 #include "main3.hpp"
+
 
 //#define DEBUG
 
 
-class Window
+class Screen
 {
-    static const int screenWidth = 80;
-    static const int screenHeight = 50;
-    static const int minWindowWidth = 20;
-    static const int minWindowHeight = 10;
-    int basePointXposition;
-    int basePointYposition;
-    int windowWidth;
-    int windowHeight;
+    int screenWidth = 80;
+    int screenHeight = 50;
+    unsigned int windowsCount = 0;
+    int currentWindowNum = 0;
+    Window* currentWindowPtr = nullptr;
+    std::map<int, Window*> window_list;
+//    std::vector <Window*> window_list;
+
 public:
-    Window()
+    Window* GetCurrent()
     {
-        basePointXposition = 0;
-        basePointYposition = 0;
-        windowWidth = screenWidth - 10;
-        windowHeight = screenHeight - 10;
+        return currentWindowPtr;
     }
-    void ShowInfo()
+    void addScreen(std::string inName = "Title")
     {
-        std::cout<< "basePointXposition = " << basePointXposition <<", basePointYposition = " << basePointYposition << ", windowWidth = " << windowWidth << ", windowHeight = " << windowHeight << std::endl;
+        bool checkInsertation;
+        checkInsertation = (window_list.insert(std::make_pair<int, Window*>(windowsCount+1, new Window(inName, screenWidth, screenHeight))).second);
+        if(checkInsertation) windowsCount++;
+        if (window_list.size() == 1)
+        {
+            currentWindowPtr = window_list.begin()->second;
+            currentWindowNum = window_list.begin()->first;
+        }
     }
-    void move()
+    int closeScreen()
     {
-        int offsetX = 0;
-        int offsetY = 0;
-        std::cout<< "Enter X-axis and Y-axis offset: ";
-        std::cin>> offsetX >> offsetY;
-        if(offsetX > 0)
+        int windowsLeft;
+        std::string delName = currentWindowPtr->GetName();
+        int delNum = currentWindowNum;
+        delete currentWindowPtr;
+        window_list.erase(currentWindowNum);
+        std::cout << "Window " << delNum << ". " << delName << " closed.\n";
+        windowsLeft = window_list.size();
+        if ( windowsLeft != 0)
         {
-            int MaxdeltaX2 = screenWidth - windowWidth - basePointXposition;
-            if (MaxdeltaX2 >= offsetX) basePointXposition += offsetX;
-            else basePointXposition += MaxdeltaX2;
+            currentWindowNum = window_list.begin()->first;
+            currentWindowPtr = window_list.find(currentWindowNum)->second;
+#ifdef DEBUG
+            std::cout << "Debug:  currentWindowNum = " <<  currentWindowNum << ",  " << window_list.find(currentWindowNum)->second->GetName() << ".\n";
+#endif
         }
-        else if (offsetX < 0)
-        {
-            if(basePointXposition >= abs(offsetX)) basePointXposition += offsetX;
-            else basePointXposition = 0;
-        }
-
-        if(offsetY > 0)
-        {
-            int MaxdeltaY2 = screenHeight - windowHeight - basePointYposition;
-            if (MaxdeltaY2 >= offsetY) basePointYposition += offsetY;
-            else basePointYposition += MaxdeltaY2;
-        }
-        else if (offsetY < 0)
-        {
-            if(basePointYposition >= abs(offsetY)) basePointYposition += offsetY;
-            else basePointYposition = 0;
-        }
-        std::cout<<"New left upper left corner position: X = " << basePointXposition << ", Y = " << basePointYposition << ".\n";
+        return windowsLeft;
     }
-
-    void resize()
+    void ShowList()
     {
-        int sizeRequestWidth = 0;
-        int sizeRequestHeight = 0;
-        int MaxNewWidth;
-        int MaxNewHeight;
-        std::cout<< "Enter new width and height: ";
-        std::cin>> sizeRequestWidth >> sizeRequestHeight;
-        if(sizeRequestWidth <= minWindowWidth) windowWidth = minWindowWidth;
-        else
+        std::cout << std::endl << "\tN windows names" << std::endl << std::endl;
+        for (std::map<int, Window*>::iterator itr = window_list.begin(); itr != window_list.end() ; ++itr)
         {
-            MaxNewWidth = screenWidth - basePointXposition;
-            if (sizeRequestWidth <= MaxNewWidth) windowWidth = sizeRequestWidth;
-            else windowWidth = MaxNewWidth;
+            std::cout << ((itr->second == currentWindowPtr)? ">>>\t" : "\t");
+            std::cout << itr->first << ". " << itr->second->GetName() << std::endl;
         }
-
-
-        if(sizeRequestHeight <= minWindowHeight) windowHeight = minWindowHeight;
-        else
-        {
-            MaxNewHeight = screenHeight - basePointYposition;
-            if (sizeRequestHeight <= MaxNewHeight) windowHeight = sizeRequestHeight;
-            else windowHeight = MaxNewHeight;
-        }
-        std::cout<<"New window width = " << windowWidth << ", height = " << windowHeight << ".\n";
+        std::cout << std::endl;
     }
-
-    void display()
+    void ChangeActive()
     {
-        for (int i = 0; i < basePointYposition; ++i) {
-            for (int j = 0; j < screenWidth; ++j) {
-                std::cout<<'0';
+        int winNumber;
+        do {
+            std::cout << "Choose number of window to set active: ";
+            std::cin >> winNumber;
+            if (winNumber < 1)
+            {
+                std::cout<< "Incorrect input. Try again.\n";
+                continue;
             }
-            std::cout<<'\n';
-        }
-
-
-        for (int i = 0; i < windowHeight; ++i) {
-            for (int j = 0; j < basePointXposition; ++j) {
-                std::cout<<'0';
-            }
-            for (int j = 0; j < windowWidth; ++j) {
-                std::cout<<'1';
-            }
-            for (int j = 0; j < screenWidth - (basePointXposition + windowWidth); ++j) {
-                std::cout<<'0';
-            }
-            std::cout<<'\n';
-        }
-
-
-
-
-
-
-        for (int i = basePointYposition + windowHeight; i < screenHeight; ++i) {
-            for (int j = 0; j < screenWidth; ++j) {
-                std::cout<<'0';
-            }
-            std::cout<<'\n';
-        }
+            if(window_list.contains(winNumber))
+            {
+                currentWindowPtr = window_list.find(winNumber)->second;
+                currentWindowNum = window_list.find(winNumber)->first;
+#ifdef DEBUG
+                std::cout<< "Active window is: " << currentWindowNum << ". " << currentWindowPtr->GetName() << std::endl;
+#endif
+                break;
+            } else std::cout << std::endl << "No window with number " << winNumber << std::endl;
+        } while(true);
     }
 };
 
 int main()
 {
-    std::string input_str;
-    Window* user_window = new Window;
+    char input_symbol;
+    Screen* user_screen = new Screen;
+    user_screen->addScreen("Welcome window");
+
 #ifdef DEBUG
-    user_window->ShowInfo();
+//    user_window->ShowInfo();
 #endif
     do
     {
-        std::cout<< "\nEnter command (move/resize/display/close):";
-        std::cin>>input_str;
-        if (input_str == "move")
+        std::cout<< "Enter command: a(add) / l(show list) / c(change active) / m(move) / r(resize) / d(display) / X(close active):";
+        std::cin>>input_symbol;
+//        input_symbol = getchar();
+        std::cin.ignore();
+        if (input_symbol == 'a')
         {
-            user_window->move();
+            user_screen->addScreen();
         }
-        else if (input_str == "resize")
+        if (input_symbol == 'l')
         {
-            user_window->resize();
+            user_screen->ShowList();
         }
-        else if (input_str == "display")
+        if (input_symbol == 'c')
         {
-            user_window->display();
+            user_screen->ChangeActive();
         }
-        else if (input_str == "close")
+        if (input_symbol == 'm')
         {
-            std::cout<< "Window closed.\n";
-            break;
+            user_screen->GetCurrent()->move();
         }
-        else
+        else if (input_symbol == 'r')
         {
-            std::cout<< "Invalid input. Try again.\n";
-            continue;
+            user_screen->GetCurrent()->resize();
         }
+        else if (input_symbol == 'd')
+        {
+            user_screen->GetCurrent()->display();
+        }
+        else if (input_symbol == 'X')
+        {
+            if(!user_screen->closeScreen()) break;
+        }
+//        else
+//        {
+//            std::cout<< "Invalid input. Try again.\n";
+//            continue;
+//        }
     } while (true);
 	return 0;
 }

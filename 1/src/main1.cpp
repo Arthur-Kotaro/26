@@ -27,7 +27,7 @@ public:
 	creation_date = *creationDateTmp;
 
 
-    	std::cout<< "Enter length in sec: ";	
+    std::cout<< "Enter length in sec: ";
 	std::cin>> length;
 	assert(length > 0);
     }
@@ -128,6 +128,8 @@ int main()
         }
         else if (input_str == "exit")
         {
+            delete user_player;
+            user_player = nullptr;
             break;
         }
         else

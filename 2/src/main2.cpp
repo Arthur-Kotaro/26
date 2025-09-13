@@ -163,6 +163,8 @@ int main()
         }
         else if (input_str == "exit")
         {
+            delete user_phone;
+            user_phone = nullptr;
             break;
         }
         else
