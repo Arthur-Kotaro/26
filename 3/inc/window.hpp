@@ -12,6 +12,10 @@ class Window
     int screenHeight;
 #endif
 
+#ifdef SCREEN_SIZE_IN_ARGS
+    friend class Screen;
+#endif
+
     std::string window_name;
     static const int minWindowWidth = 20;
     static const int minWindowHeight = 10;
@@ -36,6 +40,7 @@ public:
 #endif
 
 #ifdef SCREEN_SIZE_IN_ARGS
+private:
     void move(int screenWidth, int screenHeight);
     void resize(int screenWidth, int screenHeight);
     void display(int screenWidth, int screenHeight);

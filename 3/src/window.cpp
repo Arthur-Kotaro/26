@@ -1,5 +1,4 @@
 #include "window.hpp"
-#define SCREEN_SIZE_IN_ARGS
 
 
 #ifndef SCREEN_SIZE_IN_ARGS
