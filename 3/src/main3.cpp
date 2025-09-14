@@ -17,17 +17,20 @@ class Screen
     int currentWindowNum = 0;
     Window* currentWindowPtr = nullptr;
     std::map<int, Window*> window_list;
-//    std::vector <Window*> window_list;
+    Window* GetCurrent() { return currentWindowPtr; }
 
 public:
-    Window* GetCurrent()
-    {
-        return currentWindowPtr;
-    }
     void addScreen(std::string inName = "Title")
     {
         bool checkInsertation;
+
+
+#ifndef SCREEN_SIZE_IN_ARGS
         checkInsertation = (window_list.insert(std::make_pair<int, Window*>(windowsCount+1, new Window(inName, screenWidth, screenHeight))).second);
+#endif
+#ifdef SCREEN_SIZE_IN_ARGS
+        checkInsertation = (window_list.insert(std::make_pair<int, Window*>(windowsCount+1, new Window(inName))).second);
+#endif
         if(checkInsertation) windowsCount++;
         if (window_list.size() == 1)
         {
@@ -86,6 +89,18 @@ public:
             } else std::cout << std::endl << "No window with number " << winNumber << std::endl;
         } while(true);
     }
+
+#ifndef SCREEN_SIZE_IN_ARGS
+    void move() { currentWindowPtr->move(); }
+    void resize() { currentWindowPtr->resize(); }
+    void display() { currentWindowPtr->display(); }
+#endif
+#ifdef SCREEN_SIZE_IN_ARGS
+    void move() { currentWindowPtr->move(screenWidth, screenHeight); }
+    void resize() { currentWindowPtr->resize(screenWidth, screenHeight); }
+    void display() { currentWindowPtr->display(screenWidth, screenHeight); }
+#endif
+
 };
 
 int main()
@@ -117,15 +132,15 @@ int main()
         }
         if (input_symbol == 'm')
         {
-            user_screen->GetCurrent()->move();
+            user_screen->move();
         }
         else if (input_symbol == 'r')
         {
-            user_screen->GetCurrent()->resize();
+            user_screen->resize();
         }
         else if (input_symbol == 'd')
         {
-            user_screen->GetCurrent()->display();
+            user_screen->display();
         }
         else if (input_symbol == 'X')
         {
