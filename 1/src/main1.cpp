@@ -100,6 +100,10 @@ public:
 		std::cout << "Track playinng stoped.\n";
 	}
     }
+    ~Player()
+    {
+        for(int i = 0; i < track_list.size(); ++i) { delete track_list[i]; }
+    }
 };
 
 int main()

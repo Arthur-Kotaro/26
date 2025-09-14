@@ -137,5 +137,7 @@ int main()
 //            continue;
 //        }
     } while (true);
+    delete user_screen;
+    user_screen = nullptr;
 	return 0;
 }
